@@ -22,7 +22,9 @@
 				<th class="text-center">Resultado</th>
 			</tr>
 
-			<?php foreach ($results as $row): ?>
+			<?php foreach ($results as $row): 
+			//Se hace uso de la variable $data con el arreglo para mostrar el contenido de los campos de las tablas
+			?>
 			<tr>
 		        <td class="text-center"><?php echo $row->user_id?></td>
 		        <td class="text-center"><?php echo $row->fixture_id ?></td>
@@ -30,6 +32,9 @@
 		        <td class="text-center"><?php echo $row->score_home ?></td>
 		        <td class="text-center"><?php echo $row->score_away ?></td>
 		     <?php
+		     	//Se realiza la comprobación de los datos contenidos en score_home y score_away para establecer el resultado
+		     	//Si el score_home es mayor que score_away entonces el resultado en pantalla será "Local"
+		     	//En otros casos, es decir que score_home sea menor o igual a score_away el resultado en pantalla será "Visitante"
 		     	if ($row->score_home > $row->score_away) {
 		     		echo "<td class='text-center'>"."Local"."</td>";
 		     	} else{
