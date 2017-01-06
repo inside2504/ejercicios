@@ -53,7 +53,7 @@
 				arsort($mnt,SORT_DESC);
 				//Recorre los eventos del partido e imprime los atributos de cada uno de ellos.
 				foreach ($mnt as $e) {
-				 	$template .= '<td>'. $e['minute'] . ' | ' . $e['team'] . ' | ' . $e['type'] . ' | ' .  $e['player'] .'</td></tr>';
+				 	$template .= '<td>'. $e['minute'] . '" | ' . $e['team'] . ' | ' . $e['type'] . ' | ' .  $e['player'] .'</td></tr>';
 				 	$template .= '<td></td>';
 				}
 		 	}else{
