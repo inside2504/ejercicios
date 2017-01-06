@@ -1,6 +1,5 @@
 <?php
 	
-	include 'underscore.php';
 	//#! Config
 	// Aquí va la configuración básica del script
 	// Path para llamar el XML
@@ -11,60 +10,61 @@
 	// Construye un template con el item de la categorí
 	/*
 		@param List $arr
-			*item String $uid ID del elemento
+			*item String $id ID del elemento
 			*item String $name Nombre a imprimir
 	 */
 	function node_template ($arr) {
 		// Creamos la opción para el SELECT, le asignamos valor y nombre. Imprimimos
 		return '<option value="' . $arr['id'] . '">' . $arr['name'] . '</option>';
 	}
-	// Cosntruye un template con el item de los matches
+	// Construye un template con el item de los matches
 	/*
 		@param List $arr
-			*item String $uid ID del elemento
+			*item String $id ID del elemento
 			*item String $name Nombre a imprimir
-			*item SimpleXMLList $matches Lista de matches para construir el template
+			*items SimpleXMLList Lista de matches para construir el template
 	 */
 	function match_template ($arr) {
 		//var_dump($arr);
 		// Creamos un DIV y le asignamos el ID
 		$template = '<div class="match" data-ref="' . $arr['id'] . '"><table class="table">';
-		// Creamos el título de la lista
+		// Iniciamos el ciclo foreach para comenzar a recorrer los nodos del XML
 		foreach ($arr['matches']->match as $match) {
 		 	$mtc = $match->attributes();
 		 	$lcl = $match->localteam->attributes();
 		 	$vst = $match->visitorteam->attributes();
 		 	$evt = $match->events;
-		 	//Condicional para saber si el nodo events cuenta con event en el XML
-		 	//Si la lista de eventos tiene al menos 1 elemento entonces entrará a la condicional e imprimirá
-		 	//los nombres de los equipos y los goles, así como cada uno de los eventos del encuentro.
+		 	$mnt = array();
+		 	//Se declara una condicional para saber si existen eventos del partido.
+		 	//Si existen entonces se cumple la condición E imprime los datos de los equipos, el resultado y los eventos del partido.
 		 	if (count($evt>0)) {
+		 		//Impresión de los atributos del XML
 		 		$template .= '<tr><th>'. $mtc['status'] . '</th>';
 		 		$template .= '<th>' . $mtc['formatted_date'] . $mtc['time'] . '</th></tr>';
 				$template .= '<tr><td>'. $lcl['name'] . ' ' . $lcl['goals'] . '</td></tr>';
 				$template .= '<td>'. $vst['name'] . ' ' . $vst['goals'] . '</td>';
-				if (count($evt->event)>0) {
-					$asc = __::sortBy($evt, function ($e) {
-						$ev = $e->event->attributes();
-						return -$ev['minutes'];
-					});
+				//Declaración de la variable para guardar el arreglo
+		 		$mnt = array();
+				//Ciclo donde se convierte en array los object SimpleXMLElement
+				foreach ($evt->event as $value) {
+					$mnt[] = $value; 
 				}
-				
-		 		foreach ($evt->event as $event) {
-		 			$evn = $event->attributes();
-				 	$template .= '<td>'. $evn['minute'] . ' | ' . $evn['team'] . ' | ' . $evn['type'] . ' | ' .  $evn['player'] .'</td></tr>';
+				//Ordenamiento con arsort de forma descendente
+				arsort($mnt,SORT_DESC);
+				//Recorre los eventos del partido e imprime los atributos de cada uno de ellos.
+				foreach ($mnt as $e) {
+				 	$template .= '<td>'. $e['minute'] . ' | ' . $e['team'] . ' | ' . $e['type'] . ' | ' .  $e['player'] .'</td></tr>';
 				 	$template .= '<td></td>';
 				}
-			//En caso que no se cumpla la condición, solamente se imprimirán los nombres de los equipos y sus goles.
 		 	}else{
-			 	$template .= '<tr><th>'. $mtc['status'] . '</th>';
-			 	$template .= '<th>' . $mtc['formatted_date'] . $mtc['time'] . '</th></tr>';
+		 		//En caso de que no se cumpla la condición solamente se imprimirán los nombres de los equipos y el marcador
+			 	$template .= '<th>'. $mtc['status'] . '</th>';
 			 	$template .= '<tr><td>'. $lcl['name'] . ' ' . $lcl['goals'] . '</td></tr>';
 			 	$template .= '<tr><td>'. $vst['name'] . ' ' . $vst['goals'] . '</td></tr>';
-			 				 	
+			 	$template .= '<th>' . $mtc['formatted_date'] . $mtc['time'] . '</th>';			 	
 			 }
 		 }
-
+		//Cierre de las etiquetas
 		$template .= '</td></tr>';
 		$template .= '</table></div>';
 		// Imprimimos
