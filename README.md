@@ -1,5 +1,6 @@
 # Ejercicio XML
 El ejercicio de XML de encuentra en la carpeta soccer y está realizado en PHP puro sin la utilización de algún framework.
+Se tiene realizado el listado de todos los partidos mediante un select que muestra los torneos. Si el partido no tiene eventos, solamente se mostrarán los nombres de los equipos y su marcador, en caso contrario, se mostrarán los eventos ocurridos en el partido.
 
 #Ejercicio Querys
 Se encuentra en la carpeta querys, está realizada bajo Codeigniter para manejar el modelo MVC y hacer uso de las tablas
